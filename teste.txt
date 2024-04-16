@@ -1,0 +1,6 @@
+lw  $t0, B
+lw  $t1, C
+lw  $t2, D
+    
+add $t3, $t0, $t1   # Soma B + C e armazena o resultado em $t3
+add $t3, $t3, $t2   # Soma o resultado anterior com D e armazena em $t3
