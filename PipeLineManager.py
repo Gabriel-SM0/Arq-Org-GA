@@ -1,4 +1,4 @@
-class PipeLineMananger:
+class PipeLineManager:
     
     def __init__(self) -> None:
         pass
