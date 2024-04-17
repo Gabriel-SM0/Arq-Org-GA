@@ -13,4 +13,3 @@ class FileReader:
     def returnContent(self):
         return str(self.content)
 
-#Oi
