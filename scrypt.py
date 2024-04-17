@@ -18,9 +18,9 @@ def main():
 
     oneFetchStep = OneFetchStep("add","add","add","add","add")
     twoDecodeStep = TwoDecodeStep("add","add","add","add","add")
-    treExecutionStep = OneFetchStep("add","add","add","add","add")
-    OneFetchStep = OneFetchStep("add","add","add","add","add")
-    OneFetchStep = OneFetchStep("add","add","add","add","add")
+    treExecutionStep = TreExecutionStep("add","add","add","add","add")
+    fourMemoryStep = FourMemoryStep("add","add","add","add","add")
+    fiveWriteStep = FiveWriteStep("add","add","add","add","add")
 
 ########################################
 

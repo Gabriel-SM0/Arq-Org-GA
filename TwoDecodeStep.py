@@ -1,7 +1,7 @@
 class TwoDecodeStep:
-    def __init__(self, opcode, op1, op2, op3, valida):
-        self.opcode = opcode
-        self.op1 = op1
-        self.op2 = op2
-        self.op3 = op3
-        self.valida = valida
+    def __init__(self, OneFetchStep):
+        self.opcode = OneFetchStep.opcode
+        self.op1 = OneFetchStep.op1
+        self.op2 = OneFetchStep.op2
+        self.op3 = OneFetchStep.op3
+        self.valida = OneFetchStep.valida
