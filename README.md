@@ -21,8 +21,8 @@ Struct {
 	Opcode
 	Op1
 	Op2
-Op3
-Valida
+	Op3
+	Valida
 }
 
 Banco de registradores:
