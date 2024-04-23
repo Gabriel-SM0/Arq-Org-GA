@@ -1,4 +1,5 @@
 from OneFetchStep import OneFetchStep
+from TwoDecodeStep import TwoDecodeStep
 class PipeLineMananger:
     
     class Instruction:
@@ -8,13 +9,14 @@ class PipeLineMananger:
             self.op2 = operands[1] if len(operands) > 1 else None
             self.op3 = operands[2] if len(operands) > 2 else None
             self.valida = operands[3] if len(operands) > 3 else None
+            
 
 
 
         def __str__(self):
             return f"{self.opcode} {self.op1} {self.op2} {self.op3} {self.valida}"
 
-    def __init__(self) -> None:
+    def __init__(self, register_file) -> None:
         self.memory = {}  
         self.instructions = []  
         self.fetch_step = None  
@@ -23,6 +25,8 @@ class PipeLineMananger:
         self.memory_step = None  
         self.write_step = None  
         self.PC = 0  # Inicializa o contador do Program Counter (PC)
+        self.register_file = register_file  # Armazena o banco de registradores
+
 
     def importPipeLine(self, allFile):
         lines = allFile.split('\n')
@@ -66,7 +70,16 @@ class PipeLineMananger:
             self.write_step.op2 if self.write_step else None,
             self.write_step.op3 if self.write_step else None,
             self.write_step.valida if self.write_step else None)
+        
+        # Imprimir o banco de registradores
+        print("Register Memory:")
+        for i, register_value in enumerate(self.register_file.registers):
+            print(f"R{i}: {register_value}")
+        
         print("\n")
+
+
+
 
 
     def advance_pipeline(self):
@@ -81,8 +94,13 @@ class PipeLineMananger:
 
             # Cria uma nova instância da classe OneFetchStep com base na próxima instrução
             self.fetch_step = OneFetchStep(next_instruction.opcode, next_instruction.op1, next_instruction.op2, next_instruction.op3, next_instruction.valida)
+            
+            # Cria uma nova instância da classe TwoDecodeStep com base na próxima instrução e decodifica os operandos no construtor
+            self.decode_step = TwoDecodeStep(self.fetch_step, self.register_file, self.memory)
         else: 
             self.fetch_step = OneFetchStep(None, None, None, None, None)
+
+
         
 
 

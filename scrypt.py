@@ -1,6 +1,7 @@
 from FileReader import FileReader
 from OneFetchStep import OneFetchStep
 from PipeLineMananger import PipeLineMananger
+from RegisterFile import RegisterFile
 
 
 
@@ -11,7 +12,9 @@ print("Hello, World!");
 def main(): 
     content = FileReader()
     content.readFile("teste.txt")
-    pipeline_manager = PipeLineMananger()
+    num_registers = 32
+    register_file = RegisterFile(num_registers)  # Instancie o banco de registradores
+    pipeline_manager = PipeLineMananger(register_file)  # Passe o banco de registradores como argumento
     pipeline_manager.importPipeLine(content.returnContent())
 
 
