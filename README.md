@@ -39,3 +39,33 @@ Segunda Entrega - Acrescentar no simulador desenvolvido o algoritmo de prediçã
 
 Tabela de predição:
 Unsigned char  predicao[32];
+
+
+
+PLUSSS
+
+Busca (Fetch):
+Neste estágio, a próxima instrução a ser executada é buscada na memória de instruções.
+O endereço da próxima instrução é geralmente mantido em um registrador especial chamado Contador de Programa (PC).
+A instrução buscada é colocada no início do pipeline para ser processada nos estágios subsequentes.
+
+Decodificação (Decode):
+A instrução buscada é decodificada para determinar sua operação e operandos.
+O opcode da instrução é extraído e usado para identificar o tipo de instrução e as operações necessárias.
+Os operandos são identificados e, se necessário, lidos do banco de registradores.
+
+Execução (Execute):
+Neste estágio, a instrução é executada.
+Isso pode envolver operações aritméticas, lógicas, de controle de fluxo, etc., dependendo do tipo de instrução.
+Para operações aritméticas, os operandos podem ser processados aqui.
+Para instruções de desvio condicional, a condição é avaliada e, se verdadeira, o desvio é tomado.
+
+Acesso à Memória (Memory Access):
+Se a instrução envolve acesso à memória (por exemplo, leitura ou escrita), isso acontece neste estágio.
+Isso inclui acesso à memória de dados para instruções de carga e armazenamento.
+Para algumas arquiteturas, como a arquitetura MIPS, instruções de carga e armazenamento podem ser divididas em estágios separados de acesso à memória e conclusão do acesso à memória.
+
+Escrita do Resultado (Write-back):
+O resultado da instrução é escrito de volta no banco de registradores.
+Para instruções que produzem um resultado (por exemplo, operações aritméticas), esse estágio é onde o resultado é armazenado no registrador apropriado.
+Para instruções que não produzem um resultado (por exemplo, instruções de desvio), esse estágio ainda pode ser usado para limpar ou preparar o pipeline para a próxima instrução.
