@@ -1,8 +1,4 @@
-B: .word 10
-C: .word 20
-D: .word 30
-
-lw  $t0, B
+lw  $t0, $t1(100)
 lw  $t1, C
 lw  $t2, D
     

@@ -72,9 +72,9 @@ class PipeLineMananger:
             self.write_step.valida if self.write_step else None)
         
         # Imprimir o banco de registradores
-        print("Register Memory:")
-        for i, register_value in enumerate(self.register_file.registers):
-            print(f"R{i}: {register_value}")
+        # print("Register Memory:")
+        # for i, register_value in enumerate(self.register_file.registers):
+        #     print(f"R{i}: {register_value}")
         
         print("\n")
 
@@ -82,7 +82,7 @@ class PipeLineMananger:
 
 
 
-    def advance_pipeline(self):
+    def advance_pipeline(self): 
         self.write_step = self.memory_step
         self.memory_step = self.execution_step
         self.execution_step = self.decode_step

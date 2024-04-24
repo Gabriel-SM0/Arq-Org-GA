@@ -9,13 +9,13 @@ class TwoDecodeStep:
         self.memory = memory
 
         # Decodificação dos Operandos no construtor
-        self.decode_operands()
+        #self.decode_operands()
 
-    def decode_operands(self):
-        # Se a instrução for uma carga (LW), buscar o valor na memória e armazená-lo no registrador
-        if self.opcode == "lw":
-            if self.op1.startswith("$"):  # Verifica se o primeiro operando é um registrador
-                register_name = self.op1[1:]  # Remove o símbolo $ do nome do registrador
-                memory_address = self.memory[self.op2]  # Obtém o endereço de memória a ser carregado
-                data_value = self.memory.read_memory(memory_address)  # Lê o valor da memória
-                self.register_file.write_register(register_name, data_value)  # Escreve o valor no registrador
+        # def decode_operands(self):
+        # # Se a instrução for uma carga (LW), buscar o valor na memória e armazená-lo no registrador
+        # if self.opcode == "lw":
+        #     if self.op1.startswith("$"):  # Verifica se o primeiro operando é um registrador
+        #         register_name = self.op1[1:]  # Remove o símbolo $ do nome do registrador
+        #         memory_address = self.memory[self.op2]  # Obtém o endereço de memória a ser carregado
+        #         data_value = self.memory.read_memory(memory_address)  # Lê o valor da memória
+        #         self.register_file.write_register(register_name, data_value)  # Escreve o valor no registrador

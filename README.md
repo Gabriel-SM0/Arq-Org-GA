@@ -69,3 +69,15 @@ Escrita do Resultado (Write-back):
 O resultado da instrução é escrito de volta no banco de registradores.
 Para instruções que produzem um resultado (por exemplo, operações aritméticas), esse estágio é onde o resultado é armazenado no registrador apropriado.
 Para instruções que não produzem um resultado (por exemplo, instruções de desvio), esse estágio ainda pode ser usado para limpar ou preparar o pipeline para a próxima instrução.
+
+
+
+
+
+
+Na primeira não faz nada.
+Na segunda não faz nada.
+Na terceira ele vai calcular qual a posição do dado que ele deve pegar
+Na quarta ele vai pegar o dado na memoria
+Na quinta ele pega o dado que ele pegou na quarta e joga pros registradores
+
