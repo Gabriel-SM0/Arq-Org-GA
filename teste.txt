@@ -1,6 +1,6 @@
-lw  $t0, $t1(100)
-lw  $t1, C
-lw  $t2, D
-    
-add $t3, $t0, $t1   # Soma B + C e armazena o resultado em $t3
-add $t3, $t3, $t2   # Soma o resultado anterior com D e armazena em $t3
+lw $t1, 100($t0)
+lw $t2, 101($t0)
+lw $t3, 102($t0)
+
+add $t4, $t1, $t2   # Soma B + C e armazena o resultado em $t4
+add $t4, $t3, $t4   # Soma o resultado anterior com D e armazena em $t4
