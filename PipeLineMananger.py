@@ -34,7 +34,11 @@ class PipeLineMananger:
 
     def importPipeLine(self, allFile):
 
-        self.memory = [1] * 20
+        self.memory = [i for i in range(0, 20)]
+
+        self.memory[1] = -1
+        self.memory[2] = 10
+        self.memory[3] = 1
 
         lines = allFile.split('\n')
 
@@ -97,18 +101,24 @@ class PipeLineMananger:
     def advance_pipeline(self): 
 
         ####Run
+
         if self.fiveWriteStep is not None and self.fiveWriteStep.opcode is not None:
             self.fiveWriteStep.execute_instruction5()
             self.register_file.write_register(self.fiveWriteStep.register_number,self.fourMemoryStep.memoryValue)
 
-        if self.fourMemoryStep.op1 is not None:
+            if self.fiveWriteStep.opcode == "add":
+                self.finalRegister= int(self.fiveWriteStep.op1.replace('$','').replace('t','').replace(',',''))
+
+                self.register_file.write_register(self.finalRegister,self.resultCalc)
+
+        if self.fourMemoryStep.opcode is not None:
             self.fiveWriteStep.setAttributes(self.fourMemoryStep, self.register_file)
 
         if self.fourMemoryStep is not None and self.fourMemoryStep.opcode is not None:
             self.fourMemoryStep.execute_instruction4()
 
 
-        if self.threeExecutionStep.op1 is not None:
+        if self.threeExecutionStep.opcode is not None:
             self.fourMemoryStep.setAttributes(self.threeExecutionStep)
         
 
@@ -116,18 +126,35 @@ class PipeLineMananger:
         if self.threeExecutionStep is not None and self.threeExecutionStep.opcode is not None:
             self.threeExecutionStep.execute_instruction3()
             self.fourMemoryStep.setfinalDisplacement(self.threeExecutionStep.getfinalDisplacement())
+            if self.threeExecutionStep.opcode == "add":
+                self.resultCalc = self.registerValue1+self.registerValue2
+
             #self.threeExecutionStep.setfinalDisplacement()
 
-        if self.twoDecodeStep.op1 is not None:
+        if self.twoDecodeStep.opcode is not None:
             self.threeExecutionStep.setAttributes(self.twoDecodeStep, self.register_file, self.memory)
         
+
+        if self.twoDecodeStep is not None and self.twoDecodeStep.opcode is not None:
+            #self.twoDecodeStep.execute_instruction2()
+            if self.twoDecodeStep.opcode == "add":
+
+                if self.twoDecodeStep.op2 is not None and self.twoDecodeStep.op3 is not None:
+
+                    self.twoDecodeStep.op2 = int(str(self.twoDecodeStep.op2).replace('$','').replace('t','').replace(',',''))
+                    self.twoDecodeStep.op3 = int(str(self.twoDecodeStep.op3).replace('$','').replace('t',''))
+                    
+
+                    self.registerValue1 = self.register_file.read_register(self.twoDecodeStep.op2)
+                    self.registerValue2 = self.register_file.read_register(self.twoDecodeStep.op3)
+
 
         # if self.twoDecodeStep:
         #     self.twoDecodeStep.execute_instruction()
         # else:
         #     print("Erro: twoDecodeStep is null")
 
-        if self.oneFetchStep.op1 is not None:
+        if self.oneFetchStep.opcode is not None:
             self.twoDecodeStep.setAttributes(self.oneFetchStep)
         
 
@@ -149,7 +176,7 @@ class PipeLineMananger:
             self.oneFetchStep = OneFetchStep(next_instruction.opcode, next_instruction.op1, next_instruction.op2, next_instruction.op3, next_instruction.valida)
             
         else: 
-            self.oneFetchStep = OneFetchStep(None, None, None, None, None)
+            self.oneFetchStep = OneFetchStep("---", "---", "---", "---", "---")
 
 
         

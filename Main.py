@@ -12,7 +12,7 @@ print("Hello, World!");
 def main(): 
     content = FileReader()
     content.readFile("teste.txt")
-    num_registers = 32
+    num_registers = 10
     register_file = RegisterFile(num_registers)  # Instancie o banco de registradores
     pipeline_manager = PipeLineMananger(register_file)  # Passe o banco de registradores como argumento
     pipeline_manager.importPipeLine(content.returnContent())

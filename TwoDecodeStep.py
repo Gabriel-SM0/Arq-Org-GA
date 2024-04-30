@@ -25,13 +25,23 @@ class TwoDecodeStep:
         self.valida = fetch_step.valida
 
         # Decodificação dos Operandos no construtor
-        #self.decode_operands()
+    def execute_instruction2(self):
+        # Se a instrução for de carregamento (LW), buscar o valor na memória e armazená-lo no registrador
+        if self.opcode == "add":
 
-        # def decode_operands(self):
-        # # Se a instrução for uma carga (LW), buscar o valor na memória e armazená-lo no registrador
-        # if self.opcode == "lw":
-        #     if self.op1.startswith("$"):  # Verifica se o primeiro operando é um registrador
-        #         register_name = self.op1[1:]  # Remove o símbolo $ do nome do registrador
-        #         memory_address = self.memory[self.op2]  # Obtém o endereço de memória a ser carregado
-        #         data_value = self.memory.read_memory(memory_address)  # Lê o valor da memória
-        #         self.register_file.write_register(register_name, data_value)  # Escreve o valor no registrador
+            if self.op2 is not None and self.op3 is not None:
+
+                self.op2 = int(str(self.op2).replace('$','').replace('t','').replace(',',''))
+                self.op3 = int(str(self.op3).replace('$','').replace('t',''))
+
+
+
+    def setfinalDisplacement(self, finalDisplacement):
+        self.finalDisplacement = finalDisplacement
+
+
+    def getRegister_value_t1():
+        return self.register_value_t1
+    
+    def getRegister_value_t2():
+        return self.register_value_t2

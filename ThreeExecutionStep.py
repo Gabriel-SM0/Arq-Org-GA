@@ -59,6 +59,29 @@ class ThreeExecutionStep:
             # data_value = self.memory.read_memory(self.memory_address)
             # self.register_file.write_register(self.op1, data_value)
 
+        if self.opcode == "ADD":
+            # Dividindo a string em torno de '('
+
+            self.register_base_str = self.register_base_str.replace(')', '').replace('t', '')
+
+            # Removendo o caractere '$' da string do registrador base
+            self.register_base_str = self.register_base_str.replace('$', '')
+
+            # Convertendo o registrador base para inteiro
+            self.register_base = int(self.register_base_str)
+
+            print("espaçamento final é " + str(self.displacement + self.register_base))
+
+            self.finalDisplacement = self.displacement + self.register_base
+            self.setfinalDisplacement(self.displacement + self.register_base)
+
+            # data_value = self.memory.read_memory(self.memory_address)
+            # self.register_file.write_register(self.op1, data_value)
+
+
+
+
+
     def getfinalDisplacement(self):
         return self.finalDisplacement
     
