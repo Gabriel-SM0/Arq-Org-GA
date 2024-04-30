@@ -40,8 +40,3 @@ class TwoDecodeStep:
         self.finalDisplacement = finalDisplacement
 
 
-    def getRegister_value_t1():
-        return self.register_value_t1
-    
-    def getRegister_value_t2():
-        return self.register_value_t2
