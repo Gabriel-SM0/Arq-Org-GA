@@ -1,12 +1,28 @@
 class TwoDecodeStep:
-    def __init__(self, fetch_step, register_file, memory):
+    def __init__(self, fetch_step=None, register_file=None, memory=None):
+        if fetch_step is not None:
+            self.opcode = fetch_step.opcode
+            self.op1 = fetch_step.op1
+            self.op2 = fetch_step.op2
+            self.op3 = fetch_step.op3
+            self.valida = fetch_step.valida
+            self.register_file = register_file
+            self.memory = memory
+        else:
+            self.opcode = None
+            self.op1 = None
+            self.op2 = None
+            self.op3 = None
+            self.valida = None
+            self.register_file = None
+            self.memory = None
+
+    def setAttributes(self, fetch_step):
         self.opcode = fetch_step.opcode
         self.op1 = fetch_step.op1
         self.op2 = fetch_step.op2
         self.op3 = fetch_step.op3
         self.valida = fetch_step.valida
-        self.register_file = register_file
-        self.memory = memory
 
         # Decodificação dos Operandos no construtor
         #self.decode_operands()

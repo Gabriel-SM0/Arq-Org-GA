@@ -7,3 +7,9 @@ class RegisterFile:
 
     def write_register(self, register_num, value):
         self.registers[register_num] = value
+
+    def __getitem__(self, key):
+        return self.registers[key]
+
+    def __setitem__(self, key, value):
+        self.registers[key] = value

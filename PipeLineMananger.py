@@ -1,5 +1,8 @@
 from OneFetchStep import OneFetchStep
 from TwoDecodeStep import TwoDecodeStep
+from ThreeExecutionStep import ThreeExecutionStep
+from FourMemoryStep import FourMemoryStep
+from FiveWriteStep import FiveWriteStep
 class PipeLineMananger:
     
     class Instruction:
@@ -19,23 +22,28 @@ class PipeLineMananger:
     def __init__(self, register_file) -> None:
         self.memory = {}  
         self.instructions = []  
-        self.fetch_step = None  
-        self.decode_step = None  
-        self.execution_step = None  
-        self.memory_step = None  
-        self.write_step = None  
+        self.oneFetchStep = OneFetchStep()
+        self.twoDecodeStep = TwoDecodeStep()
+        self.threeExecutionStep = ThreeExecutionStep()
+        self.fourMemoryStep = FourMemoryStep()
+        self.fiveWriteStep = FiveWriteStep()
+ 
         self.PC = 0  # Inicializa o contador do Program Counter (PC)
         self.register_file = register_file  # Armazena o banco de registradores
 
 
     def importPipeLine(self, allFile):
+
+        self.memory = [1] * 20
+
         lines = allFile.split('\n')
 
         for line in lines:
-            if ':' in line:
-                label, value = line.split(':')
-                self.memory[label.strip()] = int(value.strip().split()[-1])
-            else:
+            #if ':' in line:
+                # label, value = line.split(':')
+                # self.memory[label.strip()] = int(value.strip().split()[-1])
+
+            #else:
                 instruction_parts = line.split()  
                 if instruction_parts:  
                     opcode = instruction_parts[0]  
@@ -45,31 +53,35 @@ class PipeLineMananger:
 
     def print_pipeline_state(self):
         print("Pipeline State:")
-        print("Fetch Step:", self.fetch_step.opcode if self.fetch_step else None,
-            self.fetch_step.op1 if self.fetch_step else None,
-            self.fetch_step.op2 if self.fetch_step else None,
-            self.fetch_step.op3 if self.fetch_step else None,
-            self.fetch_step.valida if self.fetch_step else None)
-        print("Decode Step:", self.decode_step.opcode if self.decode_step else None,
-            self.decode_step.op1 if self.decode_step else None,
-            self.decode_step.op2 if self.decode_step else None,
-            self.decode_step.op3 if self.decode_step else None,
-            self.decode_step.valida if self.decode_step else None)
-        print("Execution Step:", self.execution_step.opcode if self.execution_step else None,
-            self.execution_step.op1 if self.execution_step else None,
-            self.execution_step.op2 if self.execution_step else None,
-            self.execution_step.op3 if self.execution_step else None,
-            self.execution_step.valida if self.execution_step else None)
-        print("Memory Step:", self.memory_step.opcode if self.memory_step else None,
-            self.memory_step.op1 if self.memory_step else None,
-            self.memory_step.op2 if self.memory_step else None,
-            self.memory_step.op3 if self.memory_step else None,
-            self.memory_step.valida if self.memory_step else None)
-        print("Write Step:", self.write_step.opcode if self.write_step else None,
-            self.write_step.op1 if self.write_step else None,
-            self.write_step.op2 if self.write_step else None,
-            self.write_step.op3 if self.write_step else None,
-            self.write_step.valida if self.write_step else None)
+        print("Fetch Step:", self.oneFetchStep.opcode if self.oneFetchStep else None,
+            self.oneFetchStep.op1 if self.oneFetchStep else None,
+            self.oneFetchStep.op2 if self.oneFetchStep else None,
+            self.oneFetchStep.op3 if self.oneFetchStep else None,
+            self.oneFetchStep.valida if self.oneFetchStep else None)
+        print("Decode Step:", self.twoDecodeStep.opcode if self.twoDecodeStep else None,
+            self.twoDecodeStep.op1 if self.twoDecodeStep else None,
+            self.twoDecodeStep.op2 if self.twoDecodeStep else None,
+            self.twoDecodeStep.op3 if self.twoDecodeStep else None,
+            self.twoDecodeStep.valida if self.twoDecodeStep else None)
+        print("Execution Step:", self.threeExecutionStep.opcode if self.threeExecutionStep else None,
+            self.threeExecutionStep.op1 if self.threeExecutionStep else None,
+            self.threeExecutionStep.op2 if self.threeExecutionStep else None,
+            self.threeExecutionStep.op3 if self.threeExecutionStep else None,
+            self.threeExecutionStep.valida if self.threeExecutionStep else None)
+        print("Memory Step:", self.fourMemoryStep.opcode if self.fourMemoryStep else None,
+            self.fourMemoryStep.op1 if self.fourMemoryStep else None,
+            self.fourMemoryStep.op2 if self.fourMemoryStep else None,
+            self.fourMemoryStep.op3 if self.fourMemoryStep else None,
+            self.fourMemoryStep.valida if self.fourMemoryStep else None)
+        print("Write Step:", self.fiveWriteStep.opcode if self.fiveWriteStep else None,
+            self.fiveWriteStep.op1 if self.fiveWriteStep else None,
+            self.fiveWriteStep.op2 if self.fiveWriteStep else None,
+            self.fiveWriteStep.op3 if self.fiveWriteStep else None,
+            self.fiveWriteStep.valida if self.fiveWriteStep else None)
+        print("Register File Registers:")
+        for i, value in enumerate(self.register_file.registers):
+            print(f"R{i}: {value}", end=", ")
+
         
         # Imprimir o banco de registradores
         # print("Register Memory:")
@@ -83,22 +95,61 @@ class PipeLineMananger:
 
 
     def advance_pipeline(self): 
-        self.write_step = self.memory_step
-        self.memory_step = self.execution_step
-        self.execution_step = self.decode_step
-        self.decode_step = self.fetch_step
+
+        ####Run
+        if self.fiveWriteStep is not None and self.fiveWriteStep.opcode is not None:
+            self.fiveWriteStep.execute_instruction5()
+            self.register_file.write_register(self.fiveWriteStep.register_number,self.fourMemoryStep.memoryValue)
+
+        if self.fourMemoryStep.op1 is not None:
+            self.fiveWriteStep.setAttributes(self.fourMemoryStep, self.register_file)
+
+        if self.fourMemoryStep is not None and self.fourMemoryStep.opcode is not None:
+            self.fourMemoryStep.execute_instruction4()
+
+
+        if self.threeExecutionStep.op1 is not None:
+            self.fourMemoryStep.setAttributes(self.threeExecutionStep)
+        
+
+
+        if self.threeExecutionStep is not None and self.threeExecutionStep.opcode is not None:
+            self.threeExecutionStep.execute_instruction3()
+            self.fourMemoryStep.setfinalDisplacement(self.threeExecutionStep.getfinalDisplacement())
+            #self.threeExecutionStep.setfinalDisplacement()
+
+        if self.twoDecodeStep.op1 is not None:
+            self.threeExecutionStep.setAttributes(self.twoDecodeStep, self.register_file, self.memory)
+        
+
+        # if self.twoDecodeStep:
+        #     self.twoDecodeStep.execute_instruction()
+        # else:
+        #     print("Erro: twoDecodeStep is null")
+
+        if self.oneFetchStep.op1 is not None:
+            self.twoDecodeStep.setAttributes(self.oneFetchStep)
+        
+
+
+
+
+
+
+            #################
+
+
 
         if self.PC < len(self.instructions):
             next_instruction = self.instructions[self.PC]
+
             self.PC += 1  # Incrementa o PC para buscar a próxima instrução
 
             # Cria uma nova instância da classe OneFetchStep com base na próxima instrução
-            self.fetch_step = OneFetchStep(next_instruction.opcode, next_instruction.op1, next_instruction.op2, next_instruction.op3, next_instruction.valida)
+            self.oneFetchStep = OneFetchStep(next_instruction.opcode, next_instruction.op1, next_instruction.op2, next_instruction.op3, next_instruction.valida)
             
-            # Cria uma nova instância da classe TwoDecodeStep com base na próxima instrução e decodifica os operandos no construtor
-            self.decode_step = TwoDecodeStep(self.fetch_step, self.register_file, self.memory)
         else: 
-            self.fetch_step = OneFetchStep(None, None, None, None, None)
+            self.oneFetchStep = OneFetchStep(None, None, None, None, None)
 
 
         
