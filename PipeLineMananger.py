@@ -11,7 +11,7 @@ class PipeLineMananger:
             self.op1 = operands[0] if len(operands) > 0 else None
             self.op2 = operands[1] if len(operands) > 1 else None
             self.op3 = operands[2] if len(operands) > 2 else None
-            self.valida = operands[3] if len(operands) > 3 else None
+            self.valida = True
             
 
 
@@ -27,6 +27,10 @@ class PipeLineMananger:
         self.threeExecutionStep = ThreeExecutionStep()
         self.fourMemoryStep = FourMemoryStep()
         self.fiveWriteStep = FiveWriteStep()
+        self.endOfInstructions = False
+        self.totalRuns = 0
+        self.descartedInstruction = 0
+
  
         self.PC = 0  # Inicializa o contador do Program Counter (PC)
         self.register_file = register_file  # Armazena o banco de registradores
@@ -36,8 +40,8 @@ class PipeLineMananger:
 
         self.memory = [i for i in range(0, 20)]
 
-        self.memory[1] = -1
-        self.memory[2] = 10
+        self.memory[1] = 10
+        self.memory[2] = -1
         self.memory[3] = 1
 
         lines = allFile.split('\n')
@@ -96,17 +100,24 @@ class PipeLineMananger:
 
 
 
+    def searchPos(self, instructions,searchedValue):
+        for i, instrucao in enumerate(instructions):
+            if instrucao.opcode == searchedValue:
+                return i
+        return -1  # Retorna -1 se a instrução "loop" não for encontrada
 
 
     def advance_pipeline(self): 
 
         ####Run
 
+        ##WriteBack Step
         if self.fiveWriteStep is not None and self.fiveWriteStep.opcode is not None:
-            self.fiveWriteStep.execute_instruction5()
-            self.register_file.write_register(self.fiveWriteStep.register_number,self.fourMemoryStep.memoryValue)
+            if self.fiveWriteStep.opcode == "lw":    
+                self.fiveWriteStep.execute_instruction5()
+                self.register_file.write_register(self.fiveWriteStep.register_number,self.fourMemoryStep.memoryValue)
 
-            if self.fiveWriteStep.opcode == "add":
+            if self.fiveWriteStep.opcode == "add" and self.fiveWriteStep.valida == True:
                 self.finalRegister= int(self.fiveWriteStep.op1.replace('$','').replace('t','').replace(',',''))
 
                 self.register_file.write_register(self.finalRegister,self.resultCalc)
@@ -114,6 +125,7 @@ class PipeLineMananger:
         if self.fourMemoryStep.opcode is not None:
             self.fiveWriteStep.setAttributes(self.fourMemoryStep, self.register_file)
 
+        ##Memory Step
         if self.fourMemoryStep is not None and self.fourMemoryStep.opcode is not None:
             self.fourMemoryStep.execute_instruction4()
 
@@ -122,21 +134,37 @@ class PipeLineMananger:
             self.fourMemoryStep.setAttributes(self.threeExecutionStep)
         
 
-
+        ##Execution Step
         if self.threeExecutionStep is not None and self.threeExecutionStep.opcode is not None:
             self.threeExecutionStep.execute_instruction3()
             self.fourMemoryStep.setfinalDisplacement(self.threeExecutionStep.getfinalDisplacement())
             if self.threeExecutionStep.opcode == "add":
                 self.resultCalc = self.registerValue1+self.registerValue2
+                
 
-            #self.threeExecutionStep.setfinalDisplacement()
+            if self.threeExecutionStep.opcode == "beq":
+                if (self.registerValue1 == self.registerValue2):
+                    self.resultBeq = True
+                    self.twoDecodeStep.valida = False
+                    self.oneFetchStep.valida = False
+                    self.PC = self.searchPos(self.instructions, self.threeExecutionStep.op3) + 1
+                    if (self.threeExecutionStep.op3 == "done"):
+                        self.fourMemoryStep.valida = False
+                        self.fiveWriteStep.valida = False
+                        self.descartedInstruction +=2
+                else:
+                    self.resultBeq = False
+                    #self.PC = self.searchPos(self.instructions, self.threeExecutionStep.op3)
+
 
         if self.twoDecodeStep.opcode is not None:
-            self.threeExecutionStep.setAttributes(self.twoDecodeStep, self.register_file, self.memory)
+            if self.twoDecodeStep.valida == False and self.twoDecodeStep.op1 != None :
+                self.descartedInstruction +=1
+            else:
+                self.threeExecutionStep.setAttributes(self.twoDecodeStep, self.register_file, self.memory)
         
-
+        ##Decode step
         if self.twoDecodeStep is not None and self.twoDecodeStep.opcode is not None:
-            #self.twoDecodeStep.execute_instruction2()
             if self.twoDecodeStep.opcode == "add":
 
                 if self.twoDecodeStep.op2 is not None and self.twoDecodeStep.op3 is not None:
@@ -147,15 +175,25 @@ class PipeLineMananger:
 
                     self.registerValue1 = self.register_file.read_register(self.twoDecodeStep.op2)
                     self.registerValue2 = self.register_file.read_register(self.twoDecodeStep.op3)
+            
+            if self.twoDecodeStep.opcode == "beq":
+
+                if self.twoDecodeStep.op2 is not None and self.twoDecodeStep.op3 is not None:
+
+                    self.twoDecodeStep.op1 = int(str(self.twoDecodeStep.op1).replace('$','').replace('t',''))
+                    self.twoDecodeStep.op2 = int(str(self.twoDecodeStep.op2).replace('$','').replace('t',''))
+
+                    self.registerValue1 = self.register_file.read_register(self.twoDecodeStep.op1)
+                    self.registerValue2 = self.register_file.read_register(self.twoDecodeStep.op2)
 
 
-        # if self.twoDecodeStep:
-        #     self.twoDecodeStep.execute_instruction()
-        # else:
-        #     print("Erro: twoDecodeStep is null")
 
         if self.oneFetchStep.opcode is not None:
-            self.twoDecodeStep.setAttributes(self.oneFetchStep)
+            if self.oneFetchStep.valida == False and self.oneFetchStep.op1 != None:
+                self.descartedInstruction +=1
+            else:
+                self.twoDecodeStep.setAttributes(self.oneFetchStep)
+            
         
 
 
@@ -166,17 +204,22 @@ class PipeLineMananger:
             #################
 
 
+        ##Fetch step
+        if self.fiveWriteStep.opcode == "---":
+            self.endOfInstructions = True
+            print("No more instructions")
+        else:
+            if self.PC < len(self.instructions):
+                next_instruction = self.instructions[self.PC]
 
-        if self.PC < len(self.instructions):
-            next_instruction = self.instructions[self.PC]
+                self.PC += 1  # Incrementa o PC para buscar a próxima instrução
+                self.totalRuns +=1
 
-            self.PC += 1  # Incrementa o PC para buscar a próxima instrução
-
-            # Cria uma nova instância da classe OneFetchStep com base na próxima instrução
-            self.oneFetchStep = OneFetchStep(next_instruction.opcode, next_instruction.op1, next_instruction.op2, next_instruction.op3, next_instruction.valida)
-            
-        else: 
-            self.oneFetchStep = OneFetchStep("---", "---", "---", "---", "---")
+                # Cria uma nova instância da classe OneFetchStep com base na próxima instrução
+                self.oneFetchStep = OneFetchStep(next_instruction.opcode, next_instruction.op1, next_instruction.op2, next_instruction.op3, next_instruction.valida)
+                
+            else: 
+                self.oneFetchStep = OneFetchStep("---", "---", "---", "---", "---")
 
 
         

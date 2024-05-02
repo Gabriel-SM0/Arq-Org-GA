@@ -11,7 +11,7 @@ print("Hello, World!");
 #######################################
 def main(): 
     content = FileReader()
-    content.readFile("teste.txt")
+    content.readFile("contador10.txt")
     num_registers = 10
     register_file = RegisterFile(num_registers)  # Instancie o banco de registradores
     pipeline_manager = PipeLineMananger(register_file)  # Passe o banco de registradores como argumento
@@ -32,8 +32,7 @@ def main():
 
 ########################################
 
-
-    while True:
+    while pipeline_manager.endOfInstructions == False:
         # Aguarda o pressionamento da tecla "Enter"
         input("Pressione Enter para avançar a pipeline...")
 
@@ -42,6 +41,11 @@ def main():
 
         # Exibe o estado atual da pipeline
         pipeline_manager.print_pipeline_state()
+
+
+    print("No more Instructions")
+    print("Descarted Instructions: " + str(pipeline_manager.descartedInstruction))
+    print("Total runs: " + str(pipeline_manager.totalRuns))
 
 if __name__ == "__main__":
     main()

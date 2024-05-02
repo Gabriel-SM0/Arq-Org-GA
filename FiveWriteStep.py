@@ -39,9 +39,6 @@ class FiveWriteStep:
                 # Obtém o número do registrador a partir da string op1
                 self.register_number = int(op1_cleaned)
 
-                #if 0 <= self.register_number < len(self.register_file.registers):
-                    # Salva o valor da memória (memoryValue) na posição do registrador especificado
-                    #self.register_file.write_register(self.register_number, self.memoryValue)
 
 
     

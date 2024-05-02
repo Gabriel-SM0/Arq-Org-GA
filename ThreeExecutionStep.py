@@ -56,8 +56,6 @@ class ThreeExecutionStep:
             self.finalDisplacement = self.displacement + self.register_base
             self.setfinalDisplacement(self.displacement + self.register_base)
 
-            # data_value = self.memory.read_memory(self.memory_address)
-            # self.register_file.write_register(self.op1, data_value)
 
         if self.opcode == "ADD":
             # Dividindo a string em torno de '('
@@ -75,8 +73,6 @@ class ThreeExecutionStep:
             self.finalDisplacement = self.displacement + self.register_base
             self.setfinalDisplacement(self.displacement + self.register_base)
 
-            # data_value = self.memory.read_memory(self.memory_address)
-            # self.register_file.write_register(self.op1, data_value)
 
 
 
