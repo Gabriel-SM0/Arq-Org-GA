@@ -27,6 +27,9 @@ def main():
     print("Memory:")
     print(pipeline_manager.memory)
 
+    print("Escolha o modo de predição de desvio, 1 para allways false, 2 para predição por histórico (levando em consideração o último desvio):")
+    prompt = input("Waiting for value")
+    pipeline_manager.setConditionalPreview(prompt);
 
 
 

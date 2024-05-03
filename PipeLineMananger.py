@@ -30,6 +30,7 @@ class PipeLineMananger:
         self.endOfInstructions = False
         self.totalRuns = 0
         self.descartedInstruction = 0
+        self.PHT = {}
 
  
         self.PC = 0  # Inicializa o contador do Program Counter (PC)
@@ -98,6 +99,8 @@ class PipeLineMananger:
         
         print("\n")
 
+    def setConditionalPreview(self, option):
+        self.conditionalOptionalPreview = option
 
 
     def searchPos(self, instructions,searchedValue):
@@ -147,14 +150,21 @@ class PipeLineMananger:
                     self.resultBeq = True
                     self.twoDecodeStep.valida = False
                     self.oneFetchStep.valida = False
+                    if (self.conditionalOptionalPreview == '2'):
+                        self.PHT[self.PC-2] = True
                     self.PC = self.searchPos(self.instructions, self.threeExecutionStep.op3) + 1
                     if (self.threeExecutionStep.op3 == "done"):
                         self.fourMemoryStep.valida = False
                         self.fiveWriteStep.valida = False
                         self.descartedInstruction +=2
+                        if (self.conditionalOptionalPreview == '2'):
+                            self.PHT[self.PC-2] = True
                 else:
                     self.resultBeq = False
-                    #self.PC = self.searchPos(self.instructions, self.threeExecutionStep.op3)
+                    if (self.conditionalOptionalPreview == '2'):
+                        self.PHT[self.PC-2] = False
+
+
 
 
         if self.twoDecodeStep.opcode is not None:
@@ -209,17 +219,50 @@ class PipeLineMananger:
             self.endOfInstructions = True
             print("No more instructions")
         else:
-            if self.PC < len(self.instructions):
-                next_instruction = self.instructions[self.PC]
 
-                self.PC += 1  # Incrementa o PC para buscar a próxima instrução
-                self.totalRuns +=1
+            if self.conditionalOptionalPreview == '2':
 
-                # Cria uma nova instância da classe OneFetchStep com base na próxima instrução
-                self.oneFetchStep = OneFetchStep(next_instruction.opcode, next_instruction.op1, next_instruction.op2, next_instruction.op3, next_instruction.valida)
-                
-            else: 
-                self.oneFetchStep = OneFetchStep("---", "---", "---", "---", "---")
+                if self.PC - 4 in self.PHT and self.PHT[self.PC - 4] == True:
+                    if self.PC < len(self.instructions):
+                        self.PC = self.PC + 2
+                        next_instruction = self.instructions[self.PC]
+
+                        self.totalRuns += 1
+
+                        # Cria uma nova instância da classe OneFetchStep com base na próxima instrução
+                        self.oneFetchStep = OneFetchStep(next_instruction.opcode, next_instruction.op1, next_instruction.op2, next_instruction.op3, next_instruction.valida)
+
+                    else: 
+                        self.oneFetchStep = OneFetchStep("---", "---", "---", "---", "---")
+                else:
+                    if self.PC < len(self.instructions):
+                        next_instruction = self.instructions[self.PC]
+
+                        self.PC += 1  # Incrementa o PC para buscar a próxima instrução
+                        self.totalRuns += 1
+
+                        # Cria uma nova instância da classe OneFetchStep com base na próxima instrução
+                        self.oneFetchStep = OneFetchStep(next_instruction.opcode, next_instruction.op1, next_instruction.op2, next_instruction.op3, next_instruction.valida)
+
+                    else: 
+                        self.oneFetchStep = OneFetchStep("---", "---", "---", "---", "---")
+               
+
+
+
+
+            else:
+                if self.PC < len(self.instructions):
+                    next_instruction = self.instructions[self.PC]
+
+                    self.PC += 1  # Incrementa o PC para buscar a próxima instrução
+                    self.totalRuns +=1
+
+                    # Cria uma nova instância da classe OneFetchStep com base na próxima instrução
+                    self.oneFetchStep = OneFetchStep(next_instruction.opcode, next_instruction.op1, next_instruction.op2, next_instruction.op3, next_instruction.valida)
+                    
+                else: 
+                    self.oneFetchStep = OneFetchStep("---", "---", "---", "---", "---")
 
 
         
